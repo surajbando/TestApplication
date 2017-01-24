@@ -31,6 +31,8 @@ public class NetworkJSONRetriever {
 
             int responseCode = conn.getResponseCode();
 
+            Log.d("fetchFromNetwork", "responseCode*"+responseCode);
+
             if (responseCode == conn.HTTP_OK) {
 
                 is = conn.getInputStream();
