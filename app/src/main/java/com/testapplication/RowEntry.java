@@ -1,8 +1,5 @@
 package com.testapplication;
 
-/**
- * Created by Bando on 25-01-2017.
- */
 
 public class RowEntry {
     private String title;

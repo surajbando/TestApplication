@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +22,14 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     ActionBar actionBar;
-    Button btnNwCall;
+//    Button btnNwCall;
     ListView listView;
     List<RowEntry> rowEntries;
+    SwipeRefreshLayout swipeContainer;
+
+//    URL for network call
+//    String urlStr = "https://www.google.co.in/url?q=https%3A%2F%2Fdl.dropboxusercontent.com%2Fu%2F746330%2Ffacts.json&sa=D&sntz=1&usg=AFQjCNHW9vc0qfXTV_GAhYMgnhLqbkQvoQ";
+    String urlStr = "https://dl.dropboxusercontent.com/u/746330/facts.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +37,24 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         actionBar = getActionBar();
-        btnNwCall = (Button) findViewById(R.id.btn_nwcall);
         listView = (ListView) findViewById(R.id.listview);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
+        //        Network Call for the first time
+        try {
+            URL url = new URL(urlStr);
+            new NetworkCall().execute(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+//        Uncomment below for button network call
+        /*btnNwCall = (Button) findViewById(R.id.btn_nwcall);
         btnNwCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 try {
-//                    String urlStr = "https://www.google.co.in/url?q=https%3A%2F%2Fdl.dropboxusercontent.com%2Fu%2F746330%2Ffacts.json&sa=D&sntz=1&usg=AFQjCNHW9vc0qfXTV_GAhYMgnhLqbkQvoQ";
-                    String urlStr = "https://dl.dropboxusercontent.com/u/746330/facts.json";
                     URL url = new URL(urlStr);
 
                     new NetworkCall().execute(url);
@@ -49,13 +63,31 @@ public class MainActivity extends Activity {
                     e.printStackTrace();
                 }
             }
+        });*/
+
+//        For pulldown refresh functionality
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeContainer.setRefreshing(false);
+
+                try {
+                    URL url = new URL(urlStr);
+                    new NetworkCall().execute(url);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+            }
         });
+
+
     }
 
     public class NetworkCall extends AsyncTask<URL, Integer, Long>{
 
         JSONObject jsonObject = null;
-        String actionbarTitle = "";
+        String actionBarTitle = "";
 
         @Override
         protected Long doInBackground(URL... urls) {
@@ -70,12 +102,13 @@ public class MainActivity extends Activity {
             super.onPostExecute(aLong);
             Log.v("NetworkCall", " onPostExecute entering.");
 
+//            JSON Parsing Logic
             try {
                 if(null != jsonObject) {
 
-                    actionbarTitle = jsonObject.getString("title");
-                    actionBar.setTitle(actionbarTitle);
-                    Log.v("NetworkCall", "jsonObject_title*" + actionbarTitle);
+                    actionBarTitle = jsonObject.getString("title");
+                    actionBar.setTitle(actionBarTitle);
+                    Log.v("NetworkCall", "jsonObject_title*" + actionBarTitle);
 
                     JSONArray rows = jsonObject.getJSONArray("rows");
                     rowEntries = new ArrayList<RowEntry>();

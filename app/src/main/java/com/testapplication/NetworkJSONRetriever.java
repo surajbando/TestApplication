@@ -12,6 +12,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/*
+* This class is used to make the network call and return the response in JSONObject
+* */
+
 public class NetworkJSONRetriever {
 
     public JSONObject fetchFromNetwork(URL url) {
