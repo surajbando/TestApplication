@@ -1,6 +1,8 @@
 package com.testapplication;
 
-
+/*
+* This is a bean class for handling JSON data
+* */
 public class RowEntry {
     private String title;
     private String description;

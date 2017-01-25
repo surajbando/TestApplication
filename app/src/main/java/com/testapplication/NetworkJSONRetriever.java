@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /*
-* This class is used to make the network call and return the response in JSONObject
+* This class is used to make the http connection and return the response in JSONObject
 * */
 
 public class NetworkJSONRetriever {
@@ -24,18 +24,19 @@ public class NetworkJSONRetriever {
 
         try {
 
+            Log.d("NetworkJSONRetriever", "fetchFromNetwork: url*"+url.toString());
+
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(3000);
-            conn.setInstanceFollowRedirects(false);
+            conn.setInstanceFollowRedirects(true);
             conn.setRequestMethod("GET");
 
             conn.connect();
-
             int responseCode = conn.getResponseCode();
 
-            Log.d("fetchFromNetwork", "responseCode*"+responseCode);
+            Log.d("NetworkJSONRetriever", "fetchFromNetwork: Connection Established. responseCode*" + responseCode);
 
             if (responseCode == conn.HTTP_OK) {
 
@@ -51,7 +52,7 @@ public class NetworkJSONRetriever {
                 }
 
                 retJsonObject = new JSONObject(total.toString());
-                Log.v("NetworkJSONRetriever : ", "Connection Response Recieved");
+                Log.d("NetworkJSONRetriever", "fetchFromNetwork: JSON Response*" + total.toString());
 
             }
 

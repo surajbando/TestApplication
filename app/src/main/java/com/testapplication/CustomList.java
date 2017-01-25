@@ -1,7 +1,6 @@
 package com.testapplication;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ This class is used to dynamically load the listView
 public class CustomList extends ArrayAdapter<RowEntry> {
     private final Activity context;
     private final RowEntry[] rowEntries;
+
     public CustomList(Activity context,
                       RowEntry[] rowEntries) {
         super(context, R.layout.list_single, rowEntries);
@@ -29,21 +29,22 @@ public class CustomList extends ArrayAdapter<RowEntry> {
     public View getView(int position, View view, ViewGroup parent) {
 
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView= inflater.inflate(R.layout.list_single, null, true);
-        TextView rowTitle = (TextView) rowView.findViewById(R.id.row_title);
-        TextView rowDesc = (TextView) rowView.findViewById(R.id.row_desc);
-        ImageView rowImage = (ImageView) rowView.findViewById(R.id.row_img);
 
-        rowTitle.setText(rowEntries[position].getTitle());
-        rowDesc.setText(rowEntries[position].getDescription());
+        View rowView = inflater.inflate(R.layout.list_single, null, true);
+        TextView rowTitleView = (TextView) rowView.findViewById(R.id.row_title);
+        TextView rowDescView = (TextView) rowView.findViewById(R.id.row_desc);
+        ImageView rowImageView = (ImageView) rowView.findViewById(R.id.row_img);
 
-//        Resizing pending
+        rowTitleView.setText(rowEntries[position].getTitle());
+        rowDescView.setText(rowEntries[position].getDescription());
+
         Picasso.with(context)
                 .load(rowEntries[position].getImageHref())
-//                .resize(300,0)
-//                .fit()
-                .into(rowImage);
-//        Log.d("CustomList", "getView*"+rowEntries[position].getTitle()+"*" + rowEntries[position].getImageHref());
+                .resize(300,200)
+                .centerCrop()
+                .placeholder(R.drawable.no_thumb)
+                .error(R.drawable.error_thumb)
+                .into(rowImageView);
 
         return rowView;
     }
